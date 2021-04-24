@@ -2,6 +2,7 @@ venv
 .idea
 .vscode
 __pycache__
+media
 
 .env
 db.sqlite3
