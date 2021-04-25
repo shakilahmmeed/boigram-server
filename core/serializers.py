@@ -18,6 +18,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(many=True)
     is_rated = serializers.SerializerMethodField('check_is_rated')
+    avg_rating = serializers.SerializerMethodField('get_avg_rating')
 
     class Meta:
         model = Book
@@ -29,6 +30,16 @@ class BookSerializer(serializers.ModelSerializer):
             if user.is_authenticated:
                 user_rated_book = user.rating_set.filter(book=book)
                 return True if user_rated_book else False
+
+    def get_avg_rating(self, book):
+        ratings = book.rating_set.all()
+
+        if ratings.count():
+            rating_count = 0
+            for rating in ratings:
+                rating_count += rating.rating
+            avg_rating = rating_count / ratings.count()
+            return avg_rating
 
 
 class RatingSerializer(serializers.ModelSerializer):
