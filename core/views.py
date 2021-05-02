@@ -9,6 +9,13 @@ from core.serializers import BookSerializer, CategorySerializer, RatingSerialize
 
 class BookView(APIView):
     def get(self, request):
+        sort_by = request.GET.get('sortBy')
+
+        if sort_by == 'latest':
+            books = Book.objects.order_by('-created_at')
+            serializer = BookSerializer(books, many=True)
+            return Response(serializer.data)
+
         books = Book.objects.all()
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data)
