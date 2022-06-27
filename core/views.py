@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.mail import send_mail
 
 from core.models import Book, Category
 from core.serializers import BookSerializer, CategorySerializer, RatingSerializer
@@ -41,6 +42,17 @@ class SearchView(APIView):
         books = Book.objects.filter(title__icontains=query)
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data)
+
+
+class MailView(APIView):
+    def get(self, request):
+        send_mail(
+            'Test email subject',
+            'Here is the message.',
+            'no-reply@boigram.com',
+            ['shakil.hv@gmail.com']
+        )
+        return Response('mail sent successfully')
 
 
 class RatingView(APIView):
